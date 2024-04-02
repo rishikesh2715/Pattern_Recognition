@@ -9,7 +9,7 @@ plt.ion()
 
 solvers.options['show_progress'] = False
 
-X = pd.read_excel('Proj2DataSet(2).xlsx', header=None)
+X = pd.read_excel('Proj2DataSet.xlsx', header=None)
 X = X.to_numpy()
 
 C = [10, 100]
