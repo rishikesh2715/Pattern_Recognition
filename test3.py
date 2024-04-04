@@ -5,11 +5,13 @@ from cvxopt import matrix, solvers
 from sklearn.preprocessing import StandardScaler
 
 # Load dataset
-df = pd.read_excel("Proj2DataSet.xlsx", header=None)
+df = pd.read_excel("Proj2Dataset.xlsx", header=None)
 X = df.iloc[:, :2].values
 y = df.iloc[:, 2].values
 
-
+# # Standardize features
+# scaler = StandardScaler()
+# X = scaler.fit_transform(X)
 
 # Gaussian kernel
 def gaussian_kernel(x, y, sigma=1.75):
@@ -26,7 +28,7 @@ def solve_dual_soft_margin_svm(X, y, C, kernel):
     A = matrix(y, (1, n_samples), 'd')
     b = matrix(0.0)
     
-    solvers.options['show_progress'] = False
+    solvers.options['show_progress'] = True
     solution = solvers.qp(P, q, G, h, A, b)
     alphas = np.ravel(solution['x'])
     
@@ -45,25 +47,28 @@ def compute_b(X, y, alphas, kernel):
 for C_value in [10, 100]:
     alphas = solve_dual_soft_margin_svm(X, y, C_value, gaussian_kernel)
     b = compute_b(X, y, alphas, gaussian_kernel)
+
+    # Support Vectors
+    support_vectors = (alphas > 1e-4)
+
+    print(f"Number of support vectors for C = {C_value}: {sum(support_vectors)}")
     
     # Plot
-    plt.scatter(X[:, 0], X[:, 1], c=y, cmap='coolwarm')
+    plt.scatter(X[:, 0], X[:, 1], c=y, cmap='coolwarm', marker='s', edgecolors='k', s=50)
+
     plt.title(f"Gaussian Kernel SVM with C = {C_value}")
     
     # Decision boundary and margin (approximate visualization)
     ax = plt.gca()
+    # print(plt.gca())
     xlim = ax.get_xlim()
     ylim = ax.get_ylim()
 
     xx, yy = np.meshgrid(np.linspace(xlim[0], xlim[1], 100), np.linspace(ylim[0], ylim[1], 100))
     Z = np.array([decision_function(X, y, np.array([xxi, yyi]).reshape(1, -1), alphas, b, gaussian_kernel) for xxi, yyi in zip(np.ravel(xx), np.ravel(yy))])
     Z = Z.reshape(xx.shape)
-    contour = plt.contour(xx, yy, Z, levels=[-1, 0, 1], alpha=0.5, linestyles=['--', '-', '--'], colors='k')
+    contour = plt.contour(xx, yy, Z, levels=[-1, 0, 1], alpha=1, linestyles=['--', '-', '--'], colors='black')
     
     plt.show()
 
-    # Support Vectors
-    support_vectors = (alphas > 1e-4)
-    print(f"Number of support vectors for C = {C_value}: {sum(support_vectors)}")
-
-# Note: This code approximates the decision boundary visualization and does not explicitly compute misclassified samples or identify all support vectors due to the complexity of plotting non-linear decisions.
+    
