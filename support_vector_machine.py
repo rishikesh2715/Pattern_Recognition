@@ -47,7 +47,7 @@ for C in C_values:
     lambdas = np.array(solution['x']).flatten()
     
     # extract support vectors
-    sv = lambdas > 0
+    sv = lambdas > 1e-5
     index = np.arange(len(lambdas))[sv]
     sv_lambdas = lambdas[sv]
     sv_X = X[sv, :2]
