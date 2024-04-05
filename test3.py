@@ -9,8 +9,6 @@ df = pd.read_excel("Proj2DataSet.xlsx", header=None)
 X = df.iloc[:, :2].values
 y = df.iloc[:, 2].values
 
-
-
 # Gaussian kernel
 def gaussian_kernel(x, y, sigma=1.75):
     return np.exp(-np.linalg.norm(x[:, np.newaxis] - y[np.newaxis, :], axis=2)**2 / (2 * sigma**2))
@@ -19,6 +17,7 @@ def gaussian_kernel(x, y, sigma=1.75):
 def solve_dual_soft_margin_svm(X, y, C, kernel):
     n_samples, n_features = X.shape
     K = kernel(X, X)
+    print('K:', K)
     P = matrix(np.outer(y, y) * K)
     q = matrix(-np.ones(n_samples))
     G = matrix(np.vstack((-np.eye(n_samples), np.eye(n_samples))))
