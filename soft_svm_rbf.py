@@ -5,8 +5,6 @@ import matplotlib.pyplot as plt
 from sklearn import svm
 import time
 
-plt.ion()
-
 solvers.options['show_progress'] = False
 
 X = pd.read_excel('Proj2DataSet.xlsx', header=None)
@@ -15,7 +13,7 @@ X = X.to_numpy()
 C = [10, 100]
 
 def kernel(Xi, Xj):
-  return np.exp(-1.75 * np.linalg.norm(Xi - Xj) ** 2)
+  return np.exp(-0.1632653 * np.linalg.norm(Xi - Xj) ** 2)
 
 for C in C:
   y=X[:,2]
@@ -35,7 +33,7 @@ for C in C:
   sol = solvers.qp(P, q, G, h, A, b)
 
   lambdas = np.array(sol['x']).reshape(-1)
-  sv = lambdas > 10e-6  
+  sv = lambdas > 1e-4  
   svLambdas = lambdas[sv]
   svX = X[sv,:2]
   svY= y[sv]
@@ -78,7 +76,6 @@ for C in C:
   Z = decision_function(np.c_[xx.ravel(), yy.ravel()])
   Z = Z.reshape(xx.shape)
 
-  plt.figure(figsize=(10, 8))
   plt.contour(xx, yy, Z, levels=[0], alpha=0.8, colors='black', linestyles='-')
   plt.contour(xx, yy, Z, levels=[-1], alpha=0.8, colors='blue', linestyles='--')
   plt.contour(xx, yy, Z, levels=[1], alpha=0.8, colors='blue', linestyles='--')
@@ -90,6 +87,3 @@ for C in C:
   plt.title('Gaussian Kernel Dual Form Soft Margin SVM. C: {}. \nNumber of Support Vectors: {}. Misclassifications: {}.'.format(C, len(sv), len(misclassified)))
   plt.legend()
   plt.show()
-
-
-input("Press Enter to continue...")
