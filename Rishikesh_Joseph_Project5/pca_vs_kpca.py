@@ -14,6 +14,9 @@ X_pca = pca.fit_transform(X)
 kpca = KernelPCA(n_components=2, kernel='rbf', gamma=10)
 X_kpca = kpca.fit_transform(X)
 
+# Assuming X_kpca contains your Kernel PCA output
+print("Kernel PCA Transformed Points:\n", X_kpca)
+
 # Plotting
 plt.figure(figsize=(18, 6))
 
@@ -44,3 +47,12 @@ plt.grid(True)
 plt.tight_layout()
 plt.show()
 
+plt.figure(figsize=(8, 6))
+plt.scatter(X_kpca[:, 0], X_kpca[:, 1], c='red', label='Projected Data', s=100)  # Increased marker size
+plt.xlabel('Principal Component 1')
+plt.ylabel('Principal Component 2')
+plt.title('Kernel PCA Transformed Data')
+plt.grid(True)
+plt.xlim([-1, 1])
+plt.ylim([-1, 1])
+plt.show()
